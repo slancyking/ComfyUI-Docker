@@ -30,9 +30,6 @@ jobs:
           - target: ultra-slim
             cuda: 12-8
 
-    env:
-      BAKE_VAR_DOCKERHUB_REPO_NAME: ${{ vars.DOCKER_HUB_USERNAME }}/comfyui
-      BAKE_VAR_TORCH_VERSION: "2.10.0"
     steps:
       - name: Maximize build space
         uses: AdityaGarg8/remove-unwanted-software@v5
@@ -48,6 +45,11 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Set bake variables
+        run: |
+          echo "BAKE_VAR_DOCKERHUB_REPO_NAME=${{ vars.DOCKER_HUB_USERNAME }}/comfyui" >> $GITHUB_ENV
+          echo "BAKE_VAR_TORCH_VERSION=2.10.0" >> $GITHUB_ENV
 
       - name: Docker login
         uses: docker/login-action@v3
@@ -65,11 +67,10 @@ jobs:
       - name: Build and push
         uses: docker/bake-action@v6
         with:
+          files: |
+            docker-bake.hcl
           targets: ${{ matrix.target }}-${{ matrix.cuda }}
           push: true
-          set: |
-            *.DOCKERHUB_REPO_NAME=${{ vars.DOCKER_HUB_USERNAME }}/comfyui
-            *.TORCH_VERSION=2.10.0
 
       - name: Build summary
         run: |
