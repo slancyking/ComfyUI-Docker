@@ -3,7 +3,7 @@
 # ==========================================
 
 variable "DOCKERHUB_REPO_NAME" {
-    default = "zeroclue/comfyui"
+    default = "sssss2/comfyui"
 }
 
 variable "PYTHON_VERSION" {
